@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect, useCallback} from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -9,6 +9,30 @@ function App() {
   const [showInstallBanner, setShowInstallBanner] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [showToast, setShowToast] = useState(false);
+
+  // Handle Scanned Code
+  const handleScannedCode = useCallback(
+    (scannedCode) => {
+      if (!items.includes(scannedCode)) {
+        setItems((prevItems) => [...prevItems, scannedCode]);
+        setToastMessage(`${scannedCode} added to list`);
+        setShowToast(true);
+        setTimeout(() => setShowToast(false), 3000);
+      }
+    },
+    [items] // Dependencies
+  );
+
+  // Handle Hardware Scanner Input
+  const handleInputChange = (event) => {
+    if (event.key === "Enter") {
+      const scannedCode = event.target.value.trim();
+      if (scannedCode) {
+        handleScannedCode(scannedCode);
+        event.target.value = ""; // Clear the input field
+      }
+    }
+  };
 
   // Adjust viewport height for iOS devices
   useEffect(() => {
@@ -33,7 +57,7 @@ function App() {
     }
   }, []);
 
-  // Handle Scanner
+  // Handle Camera Scanner
   useEffect(() => {
     if (!isScannerVisible) return;
 
@@ -46,16 +70,7 @@ function App() {
       (result, err) => {
         if (result) {
           const scannedCode = result.text;
-          setItems((prevItems) =>
-            prevItems.includes(scannedCode) ? prevItems : [...prevItems, scannedCode]
-          );
-
-          // Show success toast if the code is new
-          if (!items.includes(scannedCode)) {
-            setToastMessage(`${scannedCode} added to list`);
-            setShowToast(true);
-            setTimeout(() => setShowToast(false), 3000);
-          }
+          handleScannedCode(scannedCode);
         }
         if (err && !(err.name === "NotFoundException")) {
           setError(err.message || "Unknown error occurred.");
@@ -66,7 +81,7 @@ function App() {
     return () => {
       codeReader.reset();
     };
-  }, [isScannerVisible, items]);
+  }, [isScannerVisible, handleScannedCode]);
 
   return (
     <div
@@ -94,12 +109,20 @@ function App() {
                 ))}
               </ul>
             )}
+            {/* Hardware Scanner Input */}
+            <input
+              type="text"
+              className="form-control mt-3"
+              placeholder="Scan a barcode"
+              onKeyDown={handleInputChange}
+              autoFocus
+            />
           </div>
         ) : (
           <div className="text-center">
             <video
               id="camera"
-              className="bg-secondary my-4"
+              className="bg-black my-4"
               width="100%"
               height="200"
               autoPlay
@@ -136,8 +159,8 @@ function App() {
           style={{ zIndex: 1050 }}
         >
           <p className="mb-0">
-            Tap <strong>Share</strong> and then <strong>"Add to Home Screen"</strong>{" "}
-            to install this app.
+            Tap <strong>Share</strong> and then <strong>"Add to Home Screen"</strong> to
+            install this app.
           </p>
           <button
             className="btn btn-sm btn-light mt-2"
