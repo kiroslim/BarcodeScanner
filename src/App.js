@@ -96,38 +96,55 @@ function App() {
       {/* Main Content */}
       <main className="flex-grow-1 d-flex flex-column justify-content-start align-items-center py-3">
         {!isScannerVisible ? (
-          <div className="w-100 text-center">
-            <h2>Scanned Items</h2>
-            {items.length === 0 ? (
-              <p>No items scanned yet.</p>
-            ) : (
-              <ul className="list-group">
-                {items.map((item, index) => (
-                  <li key={index} className="list-group-item">
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            )}
-            {/* Hardware Scanner Input */}
-            <input
-              type="text"
-              className="form-control mt-3"
-              placeholder="Scan a barcode"
-              onKeyDown={handleInputChange}
-              autoFocus
-            />
+          <div className="container">
+            <div className="row">
+              <div className="col-12">
+                <div className="w-100 text-center">
+                  {/* Hardware Scanner Input */}
+
+                  <div className="input-group">
+                    <span className="input-group-text">&#128269;</span>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="Scan a barcode"
+                      onKeyDown={handleInputChange}
+                      autoFocus
+                    />
+
+                  </div>
+                  <h2 className="mt-4">Scanned Items</h2>
+                  {items.length === 0 ? (
+                    <p>No items scanned yet.</p>
+                  ) : (
+                    <ul className="list-group">
+                      {items.map((item, index) => (
+                        <li key={index} className="list-group-item">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
-          <div className="text-center">
-            <video
-              id="camera"
-              className="bg-black my-4"
-              width="100%"
-              height="200"
-              autoPlay
-            ></video>
-            {error && <p className="text-danger">{error}</p>}
+          <div className="container">
+            <div className="row">
+              <div className="col-12">
+                <div className="text-center">
+                  <video
+                    id="camera"
+                    className="bg-black my-4"
+                    width="100%"
+                    height="200"
+                    autoPlay
+                  ></video>
+                  {error && <p className="text-danger">{error}</p>}
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </main>
@@ -145,7 +162,7 @@ function App() {
       {/* Success Toast */}
       {showToast && (
         <div
-          className="toast position-fixed bottom-0 end-0 m-3 bg-success text-white show"
+          className="toast position-fixed bottom-0 end-0 mb-5 bg-success text-white show"
           style={{ zIndex: 1050 }}
         >
           <div className="toast-body">{toastMessage}</div>
