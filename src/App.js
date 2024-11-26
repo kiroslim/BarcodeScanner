@@ -162,12 +162,13 @@ function App() {
       {/* Success Toast */}
       {showToast && (
         <div
-          className="toast position-fixed bottom-0 end-0 mb-5 bg-success text-white show"
-          style={{ zIndex: 1050 }}
+          className="toast position-fixed bottom-0 start-50 translate-middle-x bg-success text-white show"
+          style={{ zIndex: 1050, marginBottom: "4rem", paddingInline: "1rem" }}
         >
-          <div className="toast-body">{toastMessage}</div>
+          <div className="toast-body text-center">{toastMessage}</div>
         </div>
       )}
+
 
       {/* iOS Install Banner */}
       {showInstallBanner && (
